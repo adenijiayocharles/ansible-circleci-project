@@ -11,7 +11,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Create infrastructure with AWS cf"
+          name: "Create infrastructure with AWS cloud formation"
           command: |
             aws cloudformation deploy --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} --template-file ./cloudformation/server.yml
 
