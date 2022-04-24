@@ -1,29 +1,18 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: This stack deploys the infrastructure for our web application
 
-Parameters:
-  EnvironmentName:
-    Description: The name that will be prefixed to the names of our resources
-    Type: String
-  ImageID:
-    Description: AMI ID for our instance
-    Type: String
-  InstanceType:
-    Description: Instance type of our server
-    Type: String
-
 Resources:
   WebApplicationEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
       KeyName: udacity-key-pair
-      ImageId: !Ref ImageID
-      InstanceType: !Ref InstanceType
+      ImageId: ami-064d33fad222a1c4a
+      InstanceType: t2.micro
       SecurityGroups:
         - !Ref WebApplicationSecurityGroup
       Tags:
         - Key: Name
-          Value: !Ref EnvironmentName
+          Value: Ansible-CICD-Webserver
 
   WebApplicationSecurityGroup:
     Type: AWS::EC2::SecurityGroup
