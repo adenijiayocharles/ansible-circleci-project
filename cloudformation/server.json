@@ -1,0 +1,14 @@
+[
+    {
+        "ParameterKey": "EnvironmentName",
+        "ParameterValue": "Ansible-CICD-Webserver"
+    },
+    {
+        "ParameterKey": "ImageID",
+        "ParameterValue": "ami-0015a39e4b7c0966f"
+    },
+    {
+        "ParameterKey": "InstanceType",
+        "ParameterValue": "t2.micro"
+    }
+]
