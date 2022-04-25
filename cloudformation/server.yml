@@ -6,7 +6,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       KeyName: udacity-key-pair
-      ImageId: ami-064d33fad222a1c4a
+      ImageId: ami-0015a39e4b7c0966f
       InstanceType: t2.micro
       SecurityGroups:
         - !Ref WebApplicationSecurityGroup
