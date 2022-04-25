@@ -30,7 +30,7 @@ jobs:
   conduct_smoke_test:
     docker:
       - image: alpine:latest
-    
+
     steps:
       - run:
           name: "Install or update curl"
@@ -51,6 +51,6 @@ workflows:
     jobs:
       # - create_infrastructure
       - configure_infrastructure
-      - conduct_smoke_test
+      - conduct_smoke_test:
           requires:
             - configure_infrastructure
