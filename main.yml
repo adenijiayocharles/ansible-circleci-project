@@ -1,7 +1,7 @@
 ---
 - name: Exercise fpr setting up our infrastucture and configuring it with ansible
   hosts: all
-  user: ubuntu
+  user: ec2-user
   become: true
   become_method: sudo
   become_user: root
