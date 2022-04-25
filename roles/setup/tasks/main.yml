@@ -1,22 +1,22 @@
 ---
 - name: "update apt packages"
   become: yes
-  yum:
+  apt:
     update_cache: yes
 
 - name: "upgrade packages"
   become: yes
-  yum:
+  apt:
     upgrade: yes
 
 - name: "remove unneeded packages"
   become: yes
-  yum:
+  apt:
     autoremove: yes
 
 - name: "install dependencies"
   become: yes
-  yum:
+  apt:
     name: ["nodejs", "npm"]
     state: present
     update_cache: yes
