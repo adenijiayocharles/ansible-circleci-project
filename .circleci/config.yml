@@ -1,5 +1,31 @@
 version: 2.1
+commands:
+  destroy_environment:
+    steps:
+      - run:
+          name: "Destroy Environment"
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7}
 jobs:
+  create_infrastructure_two:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: "Create cloudformation stack"
+          command: |
+            aws cloudformation deploy --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7} --template-file ./cloudformation/template.yml
+  smoke_test:
+    docker:
+      - image: alpine:latest
+    steps:
+      - run:
+          name: "Test job"
+          command: return 1
+      - destroy_environment
+
   # create_infrastructure:
   #   docker:
   #     - image: amazon/aws-cli
@@ -9,48 +35,52 @@ jobs:
   #         name: "Create infrastructure with AWS cloud formation"
   #         command: |
   #           aws cloudformation deploy --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} --template-file ./cloudformation/server.yml
-  configure_infrastructure:
-    docker:
-      - image: python:3.7-alpine3.11
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - ${EC2_FINGER_PRINT}
-      - run:
-          name: "Install Ansible"
-          command: |
-            # install the dependencies needed for your playbook
-            apk add --update ansible
-      - run:
-          name: "Configure the server with ansible"
-          command: |
-            ansible-playbook -i ./inventory ./main.yml
+  # configure_infrastructure:
+  #   docker:
+  #     - image: python:3.7-alpine3.11
+  #   steps:
+  #     - checkout
+  #     - add_ssh_keys:
+  #         fingerprints:
+  #           - ${EC2_FINGER_PRINT}
+  #     - run:
+  #         name: "Install Ansible"
+  #         command: |
+  #           # install the dependencies needed for your playbook
+  #           apk add --update ansible
+  #     - run:
+  #         name: "Configure the server with ansible"
+  #         command: |
+  #           ansible-playbook -i ./inventory ./main.yml
 
-  conduct_smoke_test:
-    docker:
-      - image: alpine:latest
+  # conduct_smoke_test:
+  #   docker:
+  #     - image: alpine:latest
 
-    steps:
-      - run:
-          name: "Install or update curl"
-          command: |
-            apk add --update curl
-      - run:
-          name: "Smoke Test"
-          command: |
-            URL="https://blog.udacity.com/"
-            if curl -s --head ${URL}
-            then
-              return 0
-            else
-              return 1
-            fi
+  #   steps:
+  #     - run:
+  #         name: "Install or update curl"
+  #         command: |
+  #           apk add --update curl
+  #     - run:
+  #         name: "Smoke Test"
+  #         command: |
+  #           URL="https://blog.udacity.com/"
+  #           if curl -s --head ${URL}
+  #           then
+  #             return 0
+  #           else
+  #             return 1
+  #           fi
 workflows:
   ansible:
     jobs:
-      # - create_infrastructure
-      - configure_infrastructure
-      - conduct_smoke_test:
+      - create_infrastructure_two
+      - smoke_test:
           requires:
-            - configure_infrastructure
+            - create_infrastructure_two
+      # - create_infrastructure
+      # - configure_infrastructure
+      # - conduct_smoke_test:
+      #     requires:
+      #       - configure_infrastructure
