@@ -17,15 +17,8 @@ jobs:
           name: "Create cloudformation stack"
           command: |
             aws cloudformation deploy --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7} --template-file ./cloudformation/template.yml
-  smoke_test:
-    docker:
-      - image: alpine:latest
-    steps:
-      - run:
-          name: "Test job"
-          command: return 1
+      - run: return 1
       - destroy_environment
-
   # create_infrastructure:
   #   docker:
   #     - image: amazon/aws-cli
@@ -76,9 +69,6 @@ workflows:
   ansible:
     jobs:
       - create_infrastructure_two
-      - smoke_test:
-          requires:
-            - create_infrastructure_two
       # - create_infrastructure
       # - configure_infrastructure
       # - conduct_smoke_test:
